@@ -1,0 +1,11 @@
+{
+  "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionExperienceMetadata.json",
+  "title": "Microsoft Azure Security - Getting Started",
+  "description": "Prevent, detect, and respond to threats with increased visibility into and control over the security of your Azure resources.",
+  "story_ids": [
+    "story://content-private/content/iai/sec/1security/a_secure_your_environment",
+    "story://content-private/content/iai/sec/1security/b_disk_encryption",
+    "story://content-private/content/iai/sec/1security/c_network_for_security"
+  ],
+  "permissions": [ "everybody" ]
+}

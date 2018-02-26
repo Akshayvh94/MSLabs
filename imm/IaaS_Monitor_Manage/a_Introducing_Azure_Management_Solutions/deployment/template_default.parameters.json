@@ -1,0 +1,17 @@
+﻿{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+
+	"parameters": {
+    	"vmLocalUserPassword": 				{ "value": "config:AzureAdPassword" },
+		"storageName":						{ "value": "config:PrimaryStorageAccountName" },
+		"storageKey":						{ "value": "config:PrimaryStorageAccountKey" },
+		"jumphostDisk":						{ "value": "blob:iai/20170406/iaijumphost.vhd" },
+		"immersionScriptModuleFileLink":	{ "value": "blob:platform/20170927/Immersion.psm1" },
+			 "postDeployScriptFileLink":	{ "value": "asset:scripts/PostDeploy.ps1" },
+			 "postRebootScriptFileLink":	{ "value": "asset:scripts/PostReboot.ps1" },
+		"laServiceTier":					{ "value": "Free" },
+    "laLocation": { "value": "East US" },
+    "vmLocalUserPassword": { "value":  "config:AzureAdPassword"}
+	}	
+}

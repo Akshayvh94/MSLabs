@@ -1,0 +1,29 @@
+{
+	"$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+	"title": "Understanding Azure Networking",
+	"description": "This lab provides an overview of Azure virtual networking, from basic concepts to the services and resources provided in Azure to build virtual networks.",
+	"date_created": "2017-08-31",
+	"regions": ["southcentralus", "eastus2", "centralus"],
+	"topics": ["Azure Network Services"],
+	"products": ["Azure"],
+	"jobroles": ["IT Infrastructure Specialist"],
+	"audiences": ["IT Influencer & Implementer"],
+	"level": "Intermediate",
+	"duration_minutes": 25,
+	"access_time_minutes": 120,
+	"warmup_time_minutes": 5,
+	"permissions": ["everybody"],
+	"persona_role": "DatacenterAdmin",
+	"resources": {
+		"launch_ie_browse_azure_portal": {
+			"helper": "launchie",
+			"arguments": [
+				"https://portal.azure.com/"
+			]
+		}
+	},
+	"depends_on": [
+		"story://content-private/content/iai/networking/netshared",
+		"story://content-private/content/iai/networking/1-implement/b_deploy_nsg_and_lb"
+	]
+}

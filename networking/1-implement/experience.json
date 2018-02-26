@@ -1,0 +1,10 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.3/ImmersionExperienceMetadata.json",
+    "title": "Implementing Microsoft Azure Networking",
+    "description": "Learn about network level features available in Microsoft Azure and how to successfully implement them.",
+    "story_ids": [
+        "story://content-private/content/iai/networking/1-implement/a_understanding_networking",
+        "story://content-private/content/iai/networking/1-implement/b_deploy_nsg_and_lb"
+    ],
+    "permissions": ["maintenance"]
+}

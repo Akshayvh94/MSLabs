@@ -1,0 +1,13 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionExperienceMetadata.json",
+    "title": "Mastering Microsoft Azure Resource Manager",
+    "description": "In this lab experience, you will build and deploy solutions in Azure with both Platform as a Service (Paas) and Infrastructure as a Service (Iaas) resources. You will explore a variety of deployment processes and develop an understanding of how these resources interact and depend upon each other.",
+    "story_ids": [
+        "story://Content-Private/content/iai/arm/masteringarm/story_a_Understanding_Azure_Resource_Manager_Templates",
+        "story://Content-Private/content/iai/arm/masteringarm/story_b_Building_Azure_Resource_Manager_Infrastructure",
+        "story://Content-Private/content/iai/arm/masteringarm/story_c_Deploying_Virtual_Machines",
+        "story://Content-Private/content/iai/arm/masteringarm/story_d_Building_Azure_Resource_Manager_Services",
+        "story://Content-Private/content/iai/arm/masteringarm/story_e_Authoring_Deconstructed_Templates"              
+    ],
+    "permissions": [ "everybody" ]
+}

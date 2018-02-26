@@ -1,0 +1,11 @@
+{
+  "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionExperienceMetadata.json",
+  "title": "Getting Started with Azure Virtual Machines",
+  "description": "Build and deploy Azure Virtual machines",
+  "permissions": [ "everybody" ],
+  "story_ids": [
+    "story://Content-Private/content/iai/gettingstarted/gettingstartedexperience1/1_story_getting_started_with_azure_virtual_machines",
+    "story://Content-Private/content/iai/gettingstarted/gettingstartedexperience1/2_story_deploying_a_highly_available_vm",
+    "story://Content-Private/content/iai/gettingstarted/gettingstartedexperience1/3_story_configuration_management_and_disaster_recovery"
+  ]
+}

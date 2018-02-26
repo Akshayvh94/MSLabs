@@ -1,0 +1,12 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionExperienceMetadata.json",
+    "title": "Introduction to Azure Infrastructure",
+    "description": "Familiarize yourself with the Azure Portal: navigating, creating and managing networks, storage and web app services.",
+    "permissions": [ "everybody" ],
+  "story_ids": [
+    "story://Content-Private/content/iai/azure100/azure100experience1/1_story_portal_navigation",
+    "story://Content-Private/content/iai/azure100/azure100experience1/2_story_networking_concepts",
+    "story://Content-Private/content/iai/azure100/azure100experience1/3_story_azure_storage",
+    "story://Content-Private/content/iai/azure100/azure100experience1/4_story_azure_web_app_service"
+  ] 
+}

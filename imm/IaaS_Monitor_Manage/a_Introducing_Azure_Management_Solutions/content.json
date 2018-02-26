@@ -1,0 +1,31 @@
+{
+	"$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+
+	      "title": "Introducing Azure Management Solutions",
+	"short_title": "Introducing Azure Management Solutions",
+
+	"description": "In this scenario, we will be focusing on the basics of Azure Management Solutions to monitor virtual machines. We will look at the big picture of monitoring and review Insight and Analytics solutions in Azure. Concepts covered include Operations Management Solution (OMS) Workspaces, onboarding virtual machines and apps, Service Map, and Network Performance Monitor. ",
+	"date_created": "2017-06-20",
+	"regions": [ "southcentralus", "eastus2", "centralus", "westus" ],
+	"topics": [ "LOB Applications", "Administration" ],
+	"products": [ "Azure", "Visual Studio" ],
+	"jobroles": [ "LOB Application Specialist" ],
+	"audiences": [ "Enterprise Developer" ],
+	"level": "300",
+	"duration_minutes": 50,
+	"access_time_minutes": 120,
+	"warmup_time_minutes": 5,
+	"deployment_time_minutes": 45,
+	"permissions": [ "admins" ],
+	"persona_role": "DatacenterAdmin",
+
+	"primary_template": "template.json",
+
+	"parameters": {
+		"facilitator": "template_default.parameters.json",
+		    "student": "template_default.parameters.json",
+		 "standalone": "template_default.parameters.json"
+	},
+
+	"post_deploy_script": "SetUserRole.ps1"
+}

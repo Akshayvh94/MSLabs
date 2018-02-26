@@ -1,0 +1,149 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+        "vmAdminUserName": { "type": "string",			"defaultValue": "contosoadmin" },
+        "vmAdminPassword": { "type": "securestring",	"defaultValue": "[concat(toUpper(substring(uniqueString(resourceGroup().id, subscription().id),0,6)), '#', substring(uniqueString(resourceGroup().id, subscription().id),6,6) )]" },
+
+       "vmssName":	{ "type": "string", "defaultValue": "vmsslab" },
+    "vmssPipName":	{ "type": "string", "defaultValue": "[concat('pip',  uniqueString(resourceGroup().id) ) ]" },
+    "vmssDnsName":	{ "type": "string", "defaultValue": "[concat('dns',  uniqueString(resourceGroup().id) ) ]" },
+    "vmssLdbName":	{ "type": "string", "defaultValue": "[concat('ldb',  uniqueString(resourceGroup().id) ) ]" },
+
+    "lvmName":		{ "type": "string", "defaultValue": "unixhost" }
+
+  },
+  "variables": {
+    "virtualNetworkName": "contosonet",
+    "vNetSubnet1Name": "Subnet-1",
+    "vNetSubnet2Name": "Subnet-2",
+    "uniquevmssPipName": "[concat(parameters('vmssPipName'), uniqueString(resourceGroup().id))]",
+    "uniquevmssDnsName": "[concat(parameters('vmssDnsName'), uniqueString(resourceGroup().id))]",
+    "uniquevmssLdbName": "[concat(parameters('vmssLdbName'), uniqueString(resourceGroup().id))]",
+    "vNetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "vmSubnetRef": "[concat(variables('vNetID'), '/subnets/', variables('vNetSubnet1Name'))]",
+
+    "SubnetWebRef": "[concat(resourceId('Microsoft.Network/virtualNetworks',         variables('virtualNetworkName')),'/subnets/',variables('vNetSubnet2Name'))]",
+          "vmssID": "[       resourceId('Microsoft.Compute/virtualMachineScaleSets',parameters('vmssName')    )]",
+           "pipID": "[       resourceId('Microsoft.Network/publicIPAddresses',      variables('uniquevmssPipName') )]",
+         "extLbID": "[       resourceId('Microsoft.Network/loadBalancers',          variables('uniquevmssLdbName') )]",
+
+    "extFeName":    "[concat(parameters('vmssLdbName'), '-FE')     ]",    "extFeID":    "[concat(variables('extLbID'),'/frontendIPConfigurations/', variables('extFeName') )]",
+    "extBeName":    "[concat(parameters('vmssLdbName'), '-BE')     ]",    "extBeID":    "[concat(variables('extLbID'),'/backendAddressPools/',      variables('extBeName') )]",
+    "extProbe":     "[concat(parameters('vmssLdbName'), '-Probe')  ]",    "extProbeID": "[concat(variables('extLbID'),'/probes/',                   variables('extProbe')  )]",
+    "extNatPool":   "[concat(parameters('vmssLdbName'), '-NatPool')]",
+    "extNatPoolID": "[concat(variables('extLbID'),'/inboundNatPools/',          variables('extNatPool'))]",
+
+    "osTypeUbuntu":  { "publisher": "Canonical",              "offer": "UbuntuServer",  "sku": "14.04.4-LTS",     "version": "latest" },
+    "osTypeWindows": { "publisher": "MicrosoftWindowsServer", "offer": "WindowsServer", "sku": "2016-Datacenter", "version": "latest" },
+  
+    "lvmNic":		"[concat(parameters('lvmName'), 'Nic')]"
+  
+  },
+
+
+  "resources": [
+    {
+      "type":       "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2015-06-15",
+      "name":       "[variables('uniquevmssPipName')]",
+      "location":   "[resourceGroup().location]",
+
+      "properties": { "publicIPAllocationMethod": "Dynamic", "dnsSettings": { "domainNameLabel": "[variables('uniquevmssDnsName')]" } }
+    },
+
+
+    {
+      "type":       "Microsoft.Network/loadBalancers",
+      "apiVersion": "2016-03-30",
+      "name":       "[variables('uniquevmssLdbName')]",
+      "location":   "[resourceGroup().location]",
+
+      "dependsOn":  [ "[concat('Microsoft.Network/publicIPAddresses/', variables('uniquevmssPipName'))]" ],
+
+      "properties": {
+        "frontendIPConfigurations": [ { "name": "[variables('extFeName')]", "properties": { "publicIPAddress": { "id": "[variables('pipID')]" } } } ],
+        "backendAddressPools":      [ { "name": "[variables('extBeName')]" } ],
+        "probes":                   [ { "name": "[variables('extProbe')]",   "properties": { "protocol": "tcp", "port": 80, "intervalInSeconds": "5", "numberOfProbes": "3" } } ],
+        "inboundNatPools":          [ { "name": "[variables('extNatPool')]", "properties": { "frontendIPConfiguration": { "id": "[variables('extFeID')]" }, "protocol": "tcp", "frontendPortRangeStart": 50000, "frontendPortRangeEnd": 50119, "backendPort": 22 } } ],
+        "loadBalancingRules":       [ { "name": "Http",  "properties": { "frontendIPConfiguration": { "id": "[variables('extFeID')]" }, "backendAddressPool": { "id": "[variables('extBeID')]" }, "probe": { "id": "[variables('extProbeID')]" }, "protocol": "tcp", "frontendPort":  80, "backendPort":  80, "enableFloatingIP": false, "idleTimeoutInMinutes": 5 } },
+                                      { "name": "Https", "properties": { "frontendIPConfiguration": { "id": "[variables('extFeID')]" }, "backendAddressPool": { "id": "[variables('extBeID')]" }, "probe": { "id": "[variables('extProbeID')]" }, "protocol": "tcp", "frontendPort": 443, "backendPort": 443, "enableFloatingIP": false, "idleTimeoutInMinutes": 5 } } ]
+      }
+    },
+
+
+    {
+      "type":       "Microsoft.Compute/virtualMachineScaleSets",
+      "apiVersion": "2016-04-30-preview",
+      "name":       "[parameters('vmssName')]",
+      "location":   "[resourceGroup().location]",
+
+      "dependsOn":  [ "[concat('Microsoft.Network/loadBalancers/',   variables('uniquevmssLdbName'))]" ],
+
+      "sku":        {"capacity": 3,     "name": "Standard_D2",        "tier": "Standard"      },
+
+      "properties": {"overprovision": "true", "upgradePolicy": { "mode": "Manual" },
+        "virtualMachineProfile": { "storageProfile": { "osDisk": { "caching": "ReadOnly", "createOption": "FromImage", "managedDisk": { "storageAccountType": "Standard_LRS" } }, "imageReference": "[variables('osTypeWindows')]" },
+                                        "osProfile": { "computerNamePrefix": "[parameters('vmssName')]", "adminUsername": "[parameters('vmAdminUserName')]", "adminPassword": "[parameters('vmAdminPassword')]" },
+                                   "networkProfile": { "networkInterfaceConfigurations": [ { "name": "vmssnic", "properties": { "ipConfigurations": [ { "name": "ipcfg_lb", "properties": { "subnet": { "id": "[variables('SubnetWebRef')]" }, "loadBalancerBackendAddressPools": [ { "id": "[variables('extBeID')]" } ], "loadBalancerInboundNatPools": [ { "id": "[variables('extNatPoolID')]" } ] } } ], "primary": "true" } } ] }
+        }
+      }
+    },
+
+
+    {
+      "type":         "Microsoft.Insights/autoscaleSettings",
+      "apiVersion":   "2015-04-01",
+      "name":         "CPUautoscale",
+      "location":     "[resourceGroup().location]",
+
+      "dependsOn":    [ "[concat('Microsoft.Compute/virtualMachineScaleSets/', parameters('vmssName'))]" ],
+
+      "properties":   { "name": "CPUautoscale", "targetResourceUri": "[variables('vmssID')]", "enabled": true,
+                        "profiles": [ {
+                          "name": "Profile1",
+                          "capacity": { "minimum": "2", "maximum": "10", "default": "4" },
+                          "rules": [ { "scaleAction": { "direction": "Increase", "type": "ChangeCount", "value": "1", "cooldown": "PT1M" }, "metricTrigger": { "metricName": "Percentage CPU", "metricNamespace": "", "metricResourceUri": "[variables('vmssID')]", "timeGrain": "PT1M", "statistic": "Average", "timeWindow": "PT5M", "timeAggregation": "Average", "operator": "GreaterThan", "threshold": 80 } },
+                                     { "scaleAction": { "direction": "Decrease", "type": "ChangeCount", "value": "1", "cooldown": "PT5M" }, "metricTrigger": { "metricName": "Percentage CPU", "metricNamespace": "", "metricResourceUri": "[variables('vmssID')]", "timeGrain": "PT1M", "statistic": "Average", "timeWindow": "PT5M", "timeAggregation": "Average", "operator": "LessThan",    "threshold": 50 } } ] } ]
+      }
+    },
+
+		         
+	{
+		"type":			"Microsoft.Network/networkInterfaces",
+		"apiVersion":	"2015-06-15",
+		"name":			"[variables('lvmNic')]",
+		"location":		"[resourceGroup().location]",
+
+		"properties":	{ "ipConfigurations": [ { "name": "ipcfg1", "properties": { "privateIPAllocationMethod": "Dynamic", "subnet": { "id": "[variables('vmSubnetRef')]" } } } ] }
+	},
+
+
+	{
+		"type":			"Microsoft.Compute/virtualMachines",
+		"apiVersion":	"2016-04-30-preview",
+		"name":			"[parameters('lvmName')]",
+		"location":		"[resourceGroup().location]",
+    "dependsOn": [ "[concat('Microsoft.Network/networkInterfaces/',variables('lvmNic'))]" ],
+			
+		"properties":	{
+				"networkProfile":	{ "networkInterfaces": [ { "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('lvmNic'))]" } ] },
+			   "hardwareProfile":	{ "vmSize": "Standard_D1" },
+					 "osProfile":	{ "computerName": "[parameters('lvmName')]","adminUsername": "[parameters('vmAdminUsername')]","adminPassword": "[parameters('vmAdminPassword')]" },
+				"storageProfile":	{ "imageReference": "[variables('osTypeUbuntu')]",
+                        "osDisk":	{ "name": "[parameters('lvmName')]", "createOption": "FromImage", "managedDisk": { "storageAccountType": "Standard_LRS" } },
+					"dataDisks":	[ ] }
+		}
+	}
+
+
+
+
+  ],
+  "outputs": {
+    "scalesetName":			{ "type": "string", "value": "[parameters('vmssName')]" },
+    "unixVmName":			{ "type": "string", "value": "[parameters('lvmName')]" },
+    "unixVmUserName":		{ "type": "string", "value": "[parameters('vmAdminUserName')]" },
+    "unixVmPassword":		{ "type": "string", "value": "[parameters('vmAdminPassword')]" }
+  }
+}

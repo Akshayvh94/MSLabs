@@ -1,0 +1,83 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "StorageNamePrefix": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "storage"
+    }
+
+  },
+  "variables": {
+    "vnet-Prefix": "10.0.0.0/16",
+    "vnet-Subnet1Name": "Subnet-1",
+    "vnet-Subnet1Prefix": "10.0.0.0/24",
+    "vnet-Subnet2Name": "Subnet-2",
+    "vnet-Subnet2Prefix": "10.0.1.0/24",
+    "storageName": "[concat(parameters('StorageNamePrefix'), uniqueString(resourceGroup().id))]"
+
+  },
+  "resources": [
+    {
+      "name": "vnet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "vnet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('vnet-Prefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('vnet-Subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('vnet-Subnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[variables('vnet-Subnet2Name')]",
+            "properties": {
+              "addressPrefix": "[variables('vnet-Subnet2Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('storageName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('storageType')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "[variables('storageName')]"
+      },
+      "kind": "Storage"
+    }
+
+  ],
+  "outputs": {
+
+  }
+}

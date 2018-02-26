@@ -1,0 +1,30 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+    "title": "Authoring Deconstructed Templates",
+    "description": "Deconstructed templates break down an ARM template into reusable templates that can be shared among several different solutions. This is done by creating a master template and different resource templates to create the resources required by the solution.",
+    "date_created": "2016-08-11",
+    "regions": ["southcentralus", "eastus2", "centralus"],
+    "topics": ["Azure Dev Test"],
+    "products": ["Azure"],
+    "jobroles": ["Application Developer"],
+    "audiences": ["IT Influencer & Implementer"],
+    "level": "Advanced",
+    "duration_minutes": 30,
+    "access_time_minutes": 120,
+    "warmup_time_minutes": 5,
+    "permissions": ["everybody"],
+    "persona_role": "Developer",
+    "resources": {
+        "start_visualstudio": {
+            "helper": "launchvisualstudio",
+            "reset_to": "none",
+            "solution_file": "%userprofile%\\documents\\E1A1_BusinessIntelligence\\BusinessIntelligence.sln"
+        },
+        "launch_ise": {
+            "helper": "runcommand",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe",
+            "arguments": []
+        }
+    },
+    "depends_on": ["story://Content-Private/content/iai/arm/masteringarmshared"]
+}

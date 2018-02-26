@@ -1,0 +1,34 @@
+{
+  "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+  "title": "Advanced Azure Virtual Machine and Compute",
+  "short_title": "Advanced Azure Virtual Machine and Compute",
+  "description": "Explore advanced virutal machine and compute concepts",
+  "date_created": "2017-02-01",
+  "regions": [ "southcentralus", "eastus2" ],
+  "topics": [ "Administration", "IT & Cloud Infrastructure" ],
+  "products": [ "Azure" ],
+  "jobroles": [ "IT Infrastructure Specialist", "Systems Administrator", "DevOps Professional" ],
+  "audiences": [ "IT Administrator & Implementer", "Enterprise Developer" ],
+  "level": "100",
+  "duration_minutes": 40,
+  "access_time_minutes": 120,
+  "warmup_time_minutes": 5,
+  "permissions": [ "everybody" ],
+  "persona_role": "DBA",
+  "resources": {
+    "launch_azure_portal": {
+      "helper": "launchie",
+      "arguments": [
+        "https://portal.azure.com/"
+      ]
+    }
+  },
+  "depends_on": [ "story://content-private/content/iai/azure100/azure100shared" ],
+  "primary_template": "template.json",
+  "parameters": {
+    "facilitator": "template_default.parameters.json",
+    "standalone": "template_default.parameters.json",
+    "student": "template_default.parameters.json"
+  },
+  "post_deploy_script": "SetUserRole.ps1"
+}

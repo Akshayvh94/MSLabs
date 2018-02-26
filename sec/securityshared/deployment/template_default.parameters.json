@@ -1,0 +1,16 @@
+﻿{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+
+  "parameters": {
+    "storageName": { "value": "config:PrimaryStorageAccountName" },
+    "storageKey": { "value": "config:PrimaryStorageAccountKey" },
+    "jumphostDisk": { "value": "blob:iai/20170406/iaijumphost.vhd" },
+    "jhPayloadFileLink": { "value": "blob:tdi/20170203/tdijhpayload.zip" },
+    "contentPayloadFileLink": { "value": "blob:tdi/20170830/tdicontentPayload.zip" },
+    "configureJumphostScriptFileLink": { "value": "asset:scripts/ConfigureJumpHost.ps1" },
+    "immersionScriptModuleFileLink": { "value": "blob:platform/20170215/Immersion.psm1" },
+    "tenantid": { "value": "fa23f4b5-cee9-4c9e-a774-d31b0f10c151" },
+    "vmLocalUserPassword": { "value": "config:AzureAdPassword" }
+  }
+}

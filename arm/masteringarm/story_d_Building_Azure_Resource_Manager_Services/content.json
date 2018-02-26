@@ -1,0 +1,35 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+    "title": "Building ARM Services ",
+    "description": "This lab will guide the user through creating PaaS services in Azure with ARM templates. You will deploy web server farms in different geographical locations, deploy websites to these server farms, configure and deploy a Traffic Manager, and configured web applications from code stored on GitHub.",
+    "date_created": "2016-08-11",
+    "regions": [ "southcentralus", "eastus2", "centralus" ],
+    "topics": [ "Azure Dev Test" ],
+    "products": [ "Azure" ],
+    "jobroles": [ "Application Developer" ],
+    "audiences": [ "IT Influencer & Implementer" ],    
+    "level": "Advanced",
+    "duration_minutes": 45,
+    "access_time_minutes": 120,
+    "warmup_time_minutes": 5,
+    "permissions": [ "everybody" ],
+    "persona_role": "Developer",
+    "resources": {
+        "start_visualstudio":{
+            "helper": "launchvisualstudio",
+            "reset_to": "none",
+            "solution_file": "%userprofile%\\documents\\E1A1_BusinessIntelligence\\BusinessIntelligence.sln"
+        },
+        "launch_explorer":{
+            "helper": "runcommand",
+            "command": "%systemroot%\\explorer.exe",
+            "arguments": []
+        },
+        "launch_ise": {
+            "helper": "runcommand",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe",
+            "arguments": []
+        }        
+    },
+    "depends_on": [ "story://Content-Private/content/iai/arm/masteringarmshared" ]  
+}

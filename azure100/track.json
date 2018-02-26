@@ -1,0 +1,14 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.3/ImmersionTrackMetadata.json", 
+    "title": "Managing Infrastructure with Microsoft Azure - Getting Started",
+    "short_title": "Managing Infrastructure with Microsoft Azure - Getting Started",
+    "description": "Get hands-on and learn how to manage and build Azure resources.",
+    "solution_area": "infrastructure",
+    "category": "infrastructure",
+    "experience_ids": [
+        "experience://Content-Private/content/iai/azure100/azure100experience1",
+        "experience://Content-Private/content/iai/azure100/azure100experience2"
+    ],
+    "permissions": ["everybody"],
+    "sort_index": 0
+}

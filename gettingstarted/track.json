@@ -1,0 +1,13 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.3/ImmersionTrackMetadata.json",
+    "title": "Microsoft Virtual Machines - Getting Started",
+    "short_title": "Microsoft Virtual Machines - Getting Started",
+    "description": "Get hands-on and learn how to manage and build Azure resources.",
+    "solution_area": "infrastructure",
+    "category": "datacenter",
+    "experience_ids": [
+        "experience://Content-Private/content/iai/gettingstarted/gettingstartedexperience1"
+    ],
+    "permissions": ["everybody"],
+    "sort_index": 0
+}

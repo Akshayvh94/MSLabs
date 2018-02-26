@@ -1,0 +1,14 @@
+﻿{ 
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageName": { "value": "config:PrimaryStorageAccountName" },
+    "storageKey": { "value": "config:PrimaryStorageAccountKey" },
+    "storageSentinelName": { "value": "config:ScriptSentinelFileName" },
+    "vmDisk": { "value": "blob:iai/20170920/A100HOLLABS-JH.vhd" },
+    "postDeployScriptFileLink": { "value": "asset:scripts/PostDeploy.ps1" },
+    "immersionScriptModuleFileLink": { "value": "blob:platform/20170913/Immersion.psm1" },
+    "postRebootScriptFileLink": { "value": "asset:scripts/PostReboot.ps1" },
+    "vmLocalUserPassword": { "value": "config:AzureAdPassword" }
+  }
+}

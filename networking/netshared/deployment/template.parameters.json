@@ -1,0 +1,45 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageName": {
+      "value": "config:PrimaryStorageAccountName"
+    },
+    "storageKey": {
+      "value": "config:PrimaryStorageAccountKey"
+    },
+    "storageSentinelName": {
+      "value": "config:ScriptSentinelFileName"
+    },
+    "vmDisk": {
+      "value": "blob:iai/20170828/dii2016jh_20170828gen.vhd"
+    },
+    "postDeployScriptFileLink": {
+      "value": "asset:scripts/PostDeploy.ps1"
+    },
+    "immersionScriptModuleFileLink": {
+      "value": "blob:platform/20170927/Immersion.psm1"
+    },
+    "postRebootScriptFileLink": {
+      "value": "asset:scripts/PostReboot.ps1"
+    },
+    "notDemo": {
+      "value": "true"
+    },
+    "skipWebProxyInstall": {
+      "value": "false"
+    },
+    "VhdStorageName": {
+      "value": "config:VhdStorageAccountName"
+    },
+    "VhdContainerName": {
+      "value": "config:VhdContainerName"
+    },
+    "vmLocalUserPassword": {
+      "value": "config:AzureAdPassword"
+    },
+    "vmAdminPassword": {
+      "value": "config:AzureAdPassword"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+  "title": "Configuration Management and Disaster Recovery with Azure ",
+  "short_title": "Azure Disaster Recovery",
+  "description": "Explore Configuration Management and Disaster Recovery in Azure",
+  "date_created": "2017-02-01",
+  "regions": [ "southcentralus", "eastus2" ],
+  "topics": [ "Administration", "IT & Cloud Infrastructure" ],
+  "products": [ "Azure" ],
+  "jobroles": [ "IT Infrastructure Specialist", "Systems Administrator", "DevOps Professional" ],
+  "audiences": [ "IT Administrator & Implementer" ],
+  "level": "100",
+  "duration_minutes": 60,
+  "access_time_minutes": 120,
+  "warmup_time_minutes": 5,
+  "permissions": [ "everybody" ],
+  "persona_role": "DBA",
+  "primary_template": "template.json",
+  "resources": {
+    "launch_azure_portal": {
+      "helper": "launchie",
+      "arguments": [
+        "https://portal.azure.com/"
+      ]
+    }
+  },
+  "parameters": {
+    "facilitator": "template.parameters.json",
+    "student": "template.parameters.json",
+    "standalone": "template.parameters.json"
+  },
+  "depends_on": [ "story://content-private/content/iai/azure100/azure100shared" ],
+  "post_deploy_script": "SetUserRole.ps1"
+}

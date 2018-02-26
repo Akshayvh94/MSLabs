@@ -1,0 +1,258 @@
+﻿{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+
+	"parameters": {
+		"nsgName":							{ "type": "string",			"defaultValue": "dontCry",		"metadata": { "description": "NSG recommended by Microsoft for WannaCry virus" }		},
+		"AdminUserName":					{ "type": "string",			"defaultValue": "contosoadmin"},
+		"AdminPassword":					{ "type": "securestring",	"defaultValue": "[concat(toUpper(substring(uniqueString(resourceGroup().id,subscription().id),0,6)),'#', substring(uniqueString(resourceGroup().id, subscription().id),6,6))]" },
+		"vmLocalUserName":					{ "type": "string",			"defaultValue": "LabUser" },
+    "vmLocalUserPassword": { "type": "securestring", "defaultValue": "[concat(toUpper(substring(uniqueString(resourceGroup().id,subscription().id),0,6)),'#', substring(uniqueString(resourceGroup().id, subscription().id),6,6))]" },
+	    "storageName":						{ "type": "string" },
+		"storageKey":						{ "type": "string" },
+
+		    "dc01Name":						{ "type": "string",			"defaultValue": "dc01",			"minLength": 1 },
+		"jumphostName":						{ "type": "string",			"defaultValue": "jumphost",		"minLength": 1 },
+		"jumphostDisk":						{ "type": "string"},
+
+		  "immersionScriptModuleFileLink":	{ "type": "string" },
+		"configureJumphostScriptFileLink":	{ "type": "string" },
+					  "jhPayloadFileLink":	{ "type": "string" },
+				 "contentPayloadFileLink":	{ "type": "string" },
+	
+		"tenantid":							{ "type": "string" }
+	},
+
+	"variables": {
+		"lobVirtualNetworkName":	"LOB_Vnet",
+
+		"contosonetPrefix":			"10.0.0.0/16",		"contosonetName": "contosonet",
+		"contosonetSubnet1Prefix":	"10.0.0.0/24",		"contosonetSubnet1Name": "Subnet-1",
+		"contosonetSubnet2Prefix":	"10.0.1.0/24",		"contosonetSubnet2Name": "Subnet-2",
+
+		"vnetRef":					"[resourceId('Microsoft.Network/virtualNetworks',        variables('contosonetName'))]",
+		"nsgRef":					"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NsgName')       )]",
+
+		"subnetRef":				"[concat(variables('vnetRef'), '/subnets/', variables('contosonetSubnet1Name'))]",
+
+		"dc01OSDiskName":			"dc01OSDisk",
+		"jumphostOSDiskName":		"jumphostOSDisk",
+		"dc01OSDiskUri":			"[concat('http://', parameters('storageName'), '.blob.core.windows.net/vhds/', variables('dc01OSDiskName'),     '.vhd')]",
+		"jumphostOSDiskUri":		"[concat('http://', parameters('storageName'), '.blob.core.windows.net/vhds/', variables('jumphostOSDiskName'), '.vhd')]",
+
+		"dc01VmSize":				"Standard_D1",
+		"dc01ImageOffer":			"WindowsServer",
+		"dc01ImagePublisher":		"MicrosoftWindowsServer",
+		"dc01WindowsOSVersion":		"2012-R2-Datacenter",
+
+		"dc01NicName":				"[concat(parameters('dc01Name'), 'NetworkInterface')]",
+		"dc01NicRef":				"[resourceId('Microsoft.Network/networkInterfaces', variables('dc01NicName'))]",
+
+		"jumphostVmSize":			"Standard_D2",
+		"jumphostVhd":				"[split(parameters('jumphostDisk'), '?')[0]]",
+
+		"jumphostNicName":			"[concat(parameters('jumphostName'), 'NetworkInterface')]",
+		"jumphostPipName":			"[concat(parameters('jumphostName'), 'PublicIP')]",
+		"jumphostPipDnsName":		"[concat('jumphost', uniqueString(subscription().id, resourceGroup().id))]",
+		"jumphostNicRef":			"[resourceId('Microsoft.Network/networkInterfaces', variables('jumphostNicName'))]",
+		"jumphostPipRef":			"[resourceId('Microsoft.Network/publicIPAddresses', variables('jumphostPipName'))]",
+
+		"keyvaultname":				"[concat('keyvault', uniqueString(subscription().id, resourceGroup().id))]"
+	},
+
+
+	"resources": [
+		{
+			"type":			"Microsoft.Network/networkSecurityGroups",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[parameters('NsgName')]",
+
+			"properties":	{ "securityRules": [
+								{ "name": "rdp-rule", "properties": { "description": "Allow RDP", "protocol": "Tcp", "sourcePortRange": "*", "destinationPortRange": "3389", "sourceAddressPrefix": "Internet", "destinationAddressPrefix": "*", "access": "Allow", "priority": 100, "direction": "Inbound" } },
+								{ "name": "web-rule", "properties": { "description": "Allow WEB", "protocol": "Tcp", "sourcePortRange": "*", "destinationPortRange":   "80", "sourceAddressPrefix": "Internet", "destinationAddressPrefix": "*", "access": "Allow", "priority": 101, "direction": "Inbound" } } ]
+			}
+		},
+
+
+		{
+			"type":			"Microsoft.Network/virtualNetworks",
+			"location":		"[resourceGroup().location]",
+			"apiVersion":	"2015-06-15",
+			"name":			"[variables('contosonetName')]",
+
+			"dependsOn":	[ "[variables('nsgRef')]" ],
+
+			"properties":	{ "addressSpace": { "addressPrefixes": [ "[variables('contosonetPrefix')]" ] },
+							  "subnets": [	{ "name": "[variables('contosonetSubnet1Name')]", "properties": { "addressPrefix": "[variables('contosonetSubnet1Prefix')]", "networkSecurityGroup": { "id": "[variables('nsgRef')]" } } },
+											{ "name": "[variables('contosonetSubnet2Name')]", "properties": { "addressPrefix": "[variables('contosonetSubnet2Prefix')]", "networkSecurityGroup": { "id": "[variables('nsgRef')]" } } } ]
+			}
+		},
+		
+		
+		{
+			"type":			"Microsoft.Network/virtualNetworks",
+			"apiVersion":	"2016-03-30",
+			"location":		"[resourceGroup().location]",
+			"name":			"[variables('lobVirtualNetworkName')]",
+
+			"dependsOn":	[ "[variables('nsgRef')]" ],
+
+			"properties":	{ "addressSpace": { "addressPrefixes": [ "10.10.0.0/22" ] },
+							  "subnets": [	{ "name":      "WebTierSubnet", "properties": { "addressPrefix": "10.10.0.0/24", "networkSecurityGroup": { "id": "[variables('nsgRef')]" } } },
+											{ "name": "BusinessTierSubnet", "properties": { "addressPrefix": "10.10.1.0/24", "networkSecurityGroup": { "id": "[variables('nsgRef')]" } } },
+											{ "name": "DatabaseTierSubnet", "properties": { "addressPrefix": "10.10.2.0/24", "networkSecurityGroup": { "id": "[variables('nsgRef')]" } } } ] }
+		},
+
+
+		{
+			"type":			"Microsoft.Network/networkInterfaces",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[variables('dc01NicName')]",
+
+			"dependsOn":	[ "[variables('vnetRef')]" ],
+
+			"properties":	{ "ipConfigurations": [ { "name": "ipconfig1", "properties": { "privateIPAllocationMethod": "Static", "privateIPAddress": "10.0.0.10", "subnet": { "id": "[variables('subnetRef')]" } } } ]}
+		},
+
+
+		{
+			"type":			"Microsoft.Compute/virtualMachines",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[parameters('dc01Name')]",
+
+			"dependsOn":	[ "[variables('dc01NicRef')]" ],
+
+			"properties":	{ "hardwareProfile": { "vmSize": "[variables('dc01VmSize')]" },
+								    "osProfile": { "computerName": "[parameters('dc01Name')]", "adminUsername": "[parameters('AdminUserName')]", "adminPassword": "[parameters('AdminPassword')]" },
+							   "storageProfile": { "imageReference": { "publisher": "[variables('dc01ImagePublisher')]", "offer": "[variables('dc01ImageOffer')]", "sku": "[variables('dc01WindowsOSVersion')]", "version": "latest" },
+												   "osDisk": { "name": "[variables('dc01OSDiskName')]", "vhd": { "uri": "[variables('dc01OSDiskUri')]" }, "caching": "ReadWrite", "createOption": "FromImage" } },
+							   "networkProfile": { "networkInterfaces": [ { "id": "[variables('dc01NicRef')]" } ] }
+			}
+		},
+
+
+		{
+			"type":			"Microsoft.Network/publicIPAddresses",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[variables('jumphostPipName')]",
+
+			"properties":	{ "publicIPAllocationMethod": "Dynamic", "dnsSettings": { "domainNameLabel": "[variables('jumphostPipDnsName')]" } }
+		},
+
+
+		{
+			"type":			"Microsoft.Network/networkInterfaces",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[variables('jumphostNicName')]",
+
+			"dependsOn":	[ "[variables('jumphostPipRef')]", "[variables('vnetRef')]" ],
+			
+			"properties":	{ "ipConfigurations": [ { "name": "ipconfig1", "properties": { "privateIPAllocationMethod": "Dynamic", "subnet": { "id": "[variables('subnetRef')]" }, "publicIPAddress": { "id": "[variables('jumphostPipRef')]" } } } ] }
+		},
+
+
+		{
+			"type":			"Microsoft.Compute/virtualMachines",
+			"apiVersion":	"2015-06-15",
+			"location":		"[resourceGroup().location]",
+			"name":			"[parameters('jumphostName')]",
+
+			"dependsOn":	[ "[variables('jumphostNicRef')]" ],
+
+			"properties":	{ "hardwareProfile": { "vmSize": "[variables('jumphostVmSize')]" },
+								    "osProfile": { "computerName": "[parameters('jumphostName')]", "adminUsername": "[parameters('AdminUserName')]", "adminPassword": "[parameters('AdminPassword')]" },
+							   "storageProfile": { "osDisk": { "name": "[variables('jumphostOSDiskName')]", "osType": "Windows", "caching": "ReadWrite", "createOption": "FromImage", "image": { "uri": "[variables('jumphostVhd')]" }, "vhd": { "uri": "[variables('jumphostOSDiskUri')]" } } },
+							   "networkProfile": { "networkInterfaces": [ {"id": "[variables('jumphostNicRef')]"} ] } },
+			"resources": [
+				{
+					"type":			"extensions",
+					"apiVersion":	"2015-06-15",
+					"location":		"[resourceGroup().location]",
+					"name":			"ConfigureJumpHost",
+
+					"dependsOn":	[ "[concat('Microsoft.Compute/virtualMachines/', parameters('jumphostName'))]" ],
+
+					"properties":	{ "publisher": "Microsoft.Compute", "type": "CustomScriptExtension", "typeHandlerVersion": "1.8", "autoUpgradeMinorVersion": false,
+            "settings": {
+              "fileUris": [ "[parameters('immersionScriptModuleFileLink')]" ],
+              "vmLocalUserName":  "[parameters('vmLocalUserName')]",
+              "scriptFileUri": "[parameters('configureJumphostScriptFileLink')]",
+              "otherFileUris": [ "[parameters('jhPayloadFileLink')]", "[parameters('contentPayloadFileLink')]" ],
+              "installGuide": true,
+              "commandToExecute": "powershell -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command \"Import-Module ((Get-ChildItem -Recurse -Path Immersion.psm1).FullName); Invoke-CustomScript\""
+            },
+            "protectedSettings": {
+              "storageAccountName": "[parameters('storageName')]",
+              "storageAccountKey": "[parameters('storageKey')]",
+              "vmLocalUserPassword": "[parameters('vmLocalUserPassword')]",
+              "AdminPassword": "[parameters('AdminPassword')]"
+            }
+					}
+				}
+			]
+		},
+
+
+
+		{
+			"type":			"Microsoft.KeyVault/vaults",
+			"apiVersion":	"2015-06-01",
+			"location":		"[resourceGroup().location]",
+			"name":			"[variables('keyvaultname')]",
+
+			"properties": {
+				"tenantId":			"[parameters('tenantid')]", "sku": { "name": "standard", "family": "A" }, "enabledForDeployment": true, "enabledForDiskEncryption": true,	"enabledForTemplateDeployment": true,
+				"accessPolicies":	[ { "tenantId": "[parameters('tenantid')]", "objectId": "f127bbda-42d7-4222-b9e0-b59c2c2f6170", "permissions": { "keys": [ "all" ], "secrets": [ "all" ] } } ] }
+		}
+	],
+
+
+  "outputs": {
+    "jumphostDnsName": {
+      "type": "string",
+      "value": "[concat(variables('jumphostPipDnsName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+    },
+    "jumphostUsername": {
+      "type": "string",
+      "value": "[concat('contoso\\', parameters('vmLocalUserName'))]"
+    },
+    "jumphostPassword": {
+      "type": "string",
+      "value": "[parameters('vmLocalUserPassword')]"
+    },
+    "vmname": {
+      "type": "string",
+      "value": "[concat('ws2012', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+    },
+    "resourcegroupname": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    },
+    "resourcegrouplocation": {
+      "type": "string",
+      "value": "[resourceGroup().location]"
+    },
+    "storagename": {
+      "type": "string",
+      "value": "[parameters('storageName')]"
+    },
+    "subscriptionid": {
+      "type": "string",
+      "value": "[subscription().id]"
+    },
+    "subscriptionname": {
+      "type": "string",
+      "value": "[subscription().displayName]"
+    },
+    "keyvaultname": {
+      "type": "string",
+      "value": "[variables('keyvaultname')]"
+    }
+  }
+
+}

@@ -1,0 +1,30 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+    "title": "Building ARM Template Infrastructure",
+    "description": "This lab will guide the user through creating an IaaS solution using ARM templates.",
+    "date_created": "2016-08-11",
+    "regions": [ "southcentralus", "eastus2", "centralus" ],
+    "topics": [ "Azure Dev Test" ],
+    "products": [ "Azure" ],
+    "jobroles": [ "Application Developer" ],
+    "audiences": [ "IT Influencer & Implementer" ],    
+    "level": "Intermediate",
+    "duration_minutes": 60,
+    "access_time_minutes": 120,
+    "warmup_time_minutes": 5,
+    "permissions": [ "everybody" ],
+    "persona_role": "Developer",
+    "resources": {
+        "launch_ise": {
+            "helper": "runcommand",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe",
+            "arguments": []
+        },
+        "launch_visualstudio": {
+            "helper": "runcommand",
+            "command": "C:\\Program%20Files%20(x86)\\Microsoft%20Visual%20Studio\\2017\\Community\\Common7\\IDE\\devenv.exe",
+            "arguments": []
+        }        
+    },
+    "depends_on": [ "story://Content-Private/content/iai/arm/masteringarmshared" ]  
+}

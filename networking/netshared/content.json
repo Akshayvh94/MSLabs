@@ -1,0 +1,34 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+    "title": "Networking Shared Jumphost",
+    "short_title": "JH",
+    "description": "Deploy a Jumphost to connect to labs.",
+    "date_created": "2017-08-31",
+    "regions": ["southcentralus", "eastus2", "centralus", "westus"],
+    "topics": ["IT & Cloud Infrastructure", "Security", "Management", "Mobility"],
+    "products": ["Microsoft Enterprise + Mobility (EMS)"],
+    "jobroles": ["IT Infrastructure Specialist"],
+    "audiences": ["IT Influencer & Implementer"],
+    "level": "Intermediate",
+    "duration_minutes": 50,
+    "access_time_minutes": 120,
+    "warmup_time_minutes": 5,
+    "deployment_time_minutes": 45,
+    "permissions": [],
+    "persona_role": "DatacenterAdmin",
+    "primary_template": "template.json",
+    "resources": {
+        "launch_ie_browse_azure_portal": {
+            "helper": "launchie",
+            "arguments": [
+                "https://portal.azure.com/"
+            ]
+        }
+    },
+    "parameters": {
+        "facilitator": "template.parameters.json",
+        "student": "template.parameters.json",
+        "standalone": "template.parameters.json"
+    },
+    "post_deploy_script": "SetUserRole.ps1"
+}

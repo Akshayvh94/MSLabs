@@ -1,0 +1,3 @@
+## Conclusion
+
+In this lab, you learned the basic fundamentals of designing and deploying Azure virtual networks. You deployed a virtual network using an ARM template and explored different Azure networking resources such as virtual IP addresses, network interfaces, and load balancers. Next, you reviewed Azure VM networking configuration settings. Finally, you manually created an Azure virtual network and MV, and connected the VM to the virtual network. 

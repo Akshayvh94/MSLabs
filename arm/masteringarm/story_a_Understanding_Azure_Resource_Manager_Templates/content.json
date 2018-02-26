@@ -1,0 +1,30 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+    "title": "Understanding ARM Templates",
+    "description": "This lab is designed to guide the user through the structure and use of ARM templates. The lab will walk the user through loading an ARM template into Visual Studio, explain various sections of the template, and running a simple pre-configured script to deploy it to Azure.",
+    "date_created": "2017-09-01",
+    "regions": [ "southcentralus", "eastus2", "centralus" ],
+    "topics": [ "Azure ARM Templates" ],
+    "products": [ "Azure" ],
+    "jobroles": [ "IT Infrastructure Specialist" ],
+    "audiences": [ "IT Administrator & Implementer" ],    
+    "level": "Beginner",
+    "duration_minutes": 30,
+    "access_time_minutes": 60,
+    "warmup_time_minutes": 5,
+    "permissions": [ "everybody" ],
+    "persona_role": "Developer",
+    "resources": {
+        "start_visualstudio":{
+            "helper": "launchvisualstudio",
+            "reset_to": "none",
+            "solution_file": "%userprofile%\\documents\\E1A1_BusinessIntelligence\\BusinessIntelligence.sln"
+        },
+        "launch_ise": {
+            "helper": "runcommand",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe",
+            "arguments": []
+        }
+    },
+    "depends_on": [ "story://content-private/content/iai/arm/masteringarmshared" ]    
+}

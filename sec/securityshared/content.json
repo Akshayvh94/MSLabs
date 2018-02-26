@@ -1,0 +1,26 @@
+{
+	"$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.1/ImmersionStoryMetadata.json",
+	"title": "Jumphost deployment ",
+	"short_title": "JH",
+	"description": "Common Deployment for TDI-PublicCloud - currently only for experience 4.",
+	"date_created": "2017-06-15",
+	"regions": [ "southcentralus", "eastus2", "centralus", "westus" ],
+	"topics": [ "IT & Cloud Infrastructure", "Security", "Management", "Mobility" ],
+	"products": [ "Security" ],
+	"jobroles": [ "IT Infrastructure Specialist" ],
+	"audiences": [ "IT Influencer & Implementer" ],
+	"level": "300",
+	"duration_minutes": 50,
+	"access_time_minutes": 120,
+	"warmup_time_minutes": 5,
+	"deployment_time_minutes": 45,
+	"permissions": [],
+	"persona_role": "DatacenterAdmin",
+	"primary_template": "template.json",
+	"parameters": {
+		"facilitator": "template_default.parameters.json",
+		"student": "template_default.parameters.json",
+		"standalone": "template_default.parameters.json"
+	},
+	"post_deploy_script": "postdeploy.ps1"
+}

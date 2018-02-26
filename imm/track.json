@@ -1,0 +1,12 @@
+{
+	"$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.3/ImmersionTrackMetadata.json",
+	"title": "Microsoft Azure IaaS Monitoring and Management – Getting Started",
+	"short_title": "Microsoft Azure IaaS Monitoring and Management – Getting Started",
+	"description": "Get hands-on and learn how to manage and monitor Virtual Machines in Azure.",
+	"solution_area": "infrastructure",
+	"category": "infrastructure",
+	"experience_ids": [
+		"experience://Content-Private/content/iai/imm/IaaS_Monitor_Manage"
+	],
+	"permissions": [ "maintenance" ]
+}

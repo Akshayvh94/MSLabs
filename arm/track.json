@@ -1,0 +1,12 @@
+{
+    "$schema": "https://immtest-web.azurewebsites.net/schemas/0.0.3/ImmersionTrackMetadata.json",
+    "title": "Mastering Microsoft Azure Resource Manager",
+    "short_title": "Mastering Microsoft Azure Resource Manager",
+    "description": "Get hands-on and learn how to build Azure Resource Manager PaaS and IaaS templates.",
+    "solution_area": "infrastructure",
+    "category": "infrastructure",
+    "experience_ids": [
+        "experience://Content-Private/content/iai/arm/masteringarm"
+    ],
+    "permissions": ["everybody"]
+}

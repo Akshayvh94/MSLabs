@@ -1,0 +1,2 @@
+## Conclusion
+In this lab, you reviewed and modified simple IaaS and PaaS templates to deploy resources such as storage accounts, virtual networks, and an App service plan. After deploying the resources, you verified the deployments in the Azure portal. 
